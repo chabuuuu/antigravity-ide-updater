@@ -1,7 +1,7 @@
 # 🚀 Antigravity IDE Updater
 
-> **Trình kiểm tra và tự động cập nhật Antigravity IDE đa nền tảng (Linux & Windows)**  
-> *Đảm bảo bảo toàn 100% dữ liệu cấu hình, phím tắt, tiện ích mở rộng (extensions) và dự án đang làm việc.*
+> **Cross-platform auto-updater and version manager for Google Antigravity IDE (Linux & Windows)**  
+> *Engineered with a 100% Zero Data Loss guarantee for user settings, keybindings, extensions, and active projects.*
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -9,49 +9,49 @@
 
 ---
 
-## 📖 Giới thiệu (Overview)
+## 📖 Overview
 
-**Antigravity IDE** là môi trường phát triển AI-first tiên tiến được phát triển trên nền tảng VS Code. Tuy nhiên, việc kiểm tra và cập nhật các bản phát hành mới thủ công trên Linux hoặc Windows đôi khi phức tạp và tiềm ẩn nguy cơ cấu hình bị ghi đè nếu không thao tác đúng.
+**Antigravity IDE** is an advanced AI-first integrated development environment built on top of VS Code. However, checking for official releases and upgrading manually on Linux and Windows can be tedious and carries the risk of accidentally overwriting user configurations or custom extensions.
 
-**Antigravity IDE Updater** được xây dựng nhằm giải quyết triệt để vấn đề này:
-* 🔍 **Tự động dò tìm phiên bản:** Tự động kết nối đến máy chủ Google (`https://antigravity.google/download`) để so sánh phiên bản hiện tại và phiên bản mới nhất.
-* ⚡ **Cập nhật 1-Click tự động:** Tải về, giải nén, thiết lập quyền thực thi và đồng bộ lối tắt hệ thống chỉ với một cú nhấp chuột.
-* 🔒 **Bảo toàn dữ liệu 100% (Zero Data Loss):** Toàn bộ cài đặt cá nhân, theme, phím tắt, lịch sử chat và danh sách extension được giữ nguyên vẹn tuyệt đối.
-* 🖥️ **Đa nền tảng (Cross-Platform):** Hoạt động đồng nhất trên cả **Linux** (Ubuntu, Debian, Fedora, Arch...) và **Windows** (Windows 10, Windows 11).
-* 🎨 **Hỗ trợ cả Giao diện đồ họa (GUI) & Dòng lệnh (CLI):** Cung cấp giao diện Dark mode trực quan kèm thanh tiến trình tải chi tiết, hoặc có thể chạy ngầm thông qua terminal.
-
----
-
-## 🔒 Cơ chế Bảo toàn Dữ liệu (Zero Data Loss Architecture)
-
-Một trong những ưu tiên hàng đầu của công cụ là **tuyệt đối không làm mất dữ liệu của người dùng**:
-
-```
-[ Antigravity IDE Core Binaries ]             [ User Data & Configurations ]
-    (Được Updater cập nhật)                          (ĐƯỢC BẢO VỆ NGUYÊN VẸN)
-           │                                                    │
-   ┌───────┴──────────────┐                           ┌─────────┴─────────────┐
-   │ Linux:               │                           │ Linux:                │
-   │  ~/Antigravity IDE   │                           │  ~/.config/Antigravity│
-   │ Windows:             │                           │  ~/.antigravity-ide   │
-   │  %LOCALAPPDATA%\...  │                           │ Windows:              │
-   └──────────────────────┘                           │  %APPDATA%\Antigravity│
-                                                      │  %USERPROFILE%\.ant...│
-                                                      └───────────────────────┘
-```
-
-1. **Tách biệt dữ liệu:** Cấu hình người dùng (`settings.json`, `keybindings.json`, `snippets`) và tiện ích mở rộng (extensions) được lưu trữ hoàn toàn bên ngoài thư mục chứa mã chạy của IDE. Bộ cập nhật chỉ thay thế các file thực thi của IDE.
-2. **Snapshot sao lưu tự động:** Trước mỗi lần cập nhật, hệ thống tự động nén thư mục cấu hình người dùng vào thư mục `backups/` an toàn (lưu tối đa 3 bản gần nhất).
-3. **Cơ chế Rollback nguyên vẹn:** Trong quá trình cập nhật thư mục ứng dụng, bản cài đặt cũ được chuyển thành thư mục dự phòng (`.bak`). Nếu có bất kỳ lỗi gián đoạn nào (mất mạng, lỗi giải nén), hệ thống sẽ tự động khôi phục bản cũ ngay lập tức.
-4. **Phát hiện tiến trình đang chạy:** Nếu IDE đang mở, ứng dụng sẽ cảnh báo và cho phép đóng an toàn trước khi thay thế tệp, tránh xung đột file lock.
+**Antigravity IDE Updater** solves this with an automated, reliable utility:
+* 🔍 **Automated Version Discovery:** Directly queries the official Google distribution endpoints (`https://antigravity.google/download`) to detect the latest stable release.
+* ⚡ **1-Click Seamless Update:** Downloads the official release package, verifies integrity, swaps binaries atomically, sets file permissions, and refreshes system shortcuts automatically.
+* 🔒 **100% Zero Data Loss Guarantee:** Your personal configuration, themes, custom keybindings, chat history, and installed extensions are completely isolated and guaranteed safe.
+* 🖥️ **Cross-Platform:** Works identically on both **Linux** (Ubuntu, Debian, Fedora, Arch, etc.) and **Windows** (Windows 10, Windows 11).
+* 🎨 **GUI & CLI Dual Mode:** Includes a responsive Dark Mode GUI with real-time download progress and speed meters, as well as a non-interactive CLI mode for script automation.
 
 ---
 
-## 📥 Cài đặt Dễ Dàng (Easy Installation)
+## 🔒 Zero Data Loss Architecture
 
-### 1. Trên Linux
+User data integrity is the primary design requirement of this updater.
 
-Mở terminal và chạy lệnh cài đặt một chạm:
+```
+[ Application Binaries ]                     [ User Data & Configurations ]
+(Targeted for upgrade)                              (100% UNTOUCHED & PRESERVED)
+         │                                                        │
+ ┌───────┴──────────────┐                               ┌─────────┴─────────────┐
+ │ Linux:               │                               │ Linux:                │
+ │  ~/Antigravity IDE   │                               │  ~/.config/Antigravity│
+ │ Windows:             │                               │  ~/.antigravity-ide   │
+ │  %LOCALAPPDATA%\...  │                               │ Windows:              │
+ └──────────────────────┘                               │  %APPDATA%\Antigravity│
+                                                        │  %USERPROFILE%\.ant...│
+                                                        └───────────────────────┘
+```
+
+1. **Storage Decoupling:** User configurations (`settings.json`, `keybindings.json`, snippets) and installed extensions reside outside the application installation folder. The updater strictly touches the application core files.
+2. **Automated Pre-Update Snapshots:** Before any upgrade starts, the updater archives your user configuration directory into an encrypted/compressed snapshot in `backups/` (retaining the 3 most recent backups).
+3. **Atomic Swapping & Instant Rollback:** The existing application folder is renamed to a backup directory (`.bak`) before the new build is moved into place. If any failure occurs (network disruption, extraction error), the updater immediately rolls back to the previous working build.
+4. **Active Process Safeguard:** If Antigravity IDE is currently running, the updater prompts the user to close it safely before proceeding, avoiding locked files or corrupted runtime states.
+
+---
+
+## 📥 Easy Installation
+
+### 1. On Linux
+
+Open a terminal and run the one-step installer:
 
 ```bash
 git clone https://github.com/chabuuuu/antigravity-ide-updater.git
@@ -59,30 +59,31 @@ cd antigravity-ide-updater
 ./install.sh
 ```
 
-> **Sau khi cài đặt:**
-> * Bạn có thể tìm thấy **Antigravity IDE Updater** trong Menu ứng dụng hoặc trên màn hình Desktop.
-> * Lệnh `antigravity-ide-updater` được thêm vào đường dẫn hệ thống để gọi trực tiếp từ terminal.
+> **What this does:**
+> * Creates an executable symlink in `~/.local/bin/antigravity-ide-updater`.
+> * Installs a desktop entry in `~/.local/share/applications/antigravity-ide-updater.desktop`.
+> * Adds a desktop shortcut directly to your Desktop.
 
 ---
 
-### 2. Trên Windows
+### 2. On Windows
 
-1. Tải hoặc clone repository về máy:
+1. Clone or download the repository:
    ```cmd
    git clone https://github.com/chabuuuu/antigravity-ide-updater.git
    cd antigravity-ide-updater
    ```
-2. Chạy tệp **`install.bat`** (hoặc chuột phải vào `install.ps1` chọn *Run with PowerShell*).
+2. Double-click **`install.bat`** (or right-click `install.ps1` and select *Run with PowerShell*).
 
-> **Sau khi cài đặt:**
-> * Lối tắt **Antigravity IDE Updater** sẽ xuất hiện trên màn hình Desktop và Start Menu.
-> * Lệnh `antigravity-ide-updater` có thể được gọi từ Command Prompt / PowerShell.
+> **What this does:**
+> * Creates a command wrapper in `%LOCALAPPDATA%\Programs\AntigravityIDEUpdater\`.
+> * Installs a shortcut on your Desktop and in the Windows Start Menu.
 
 ---
 
-### 3. Cài đặt Phổ quát qua Python (Mọi hệ điều hành)
+### 3. Universal Python Installation (Any Platform)
 
-Nếu máy đã có Python 3:
+If Python 3 is installed:
 
 ```bash
 python install.py
@@ -90,92 +91,92 @@ python install.py
 
 ---
 
-## 🚀 Hướng dẫn Sử dụng (Usage)
+## 🚀 Usage
 
-### 1. Giao diện đồ họa (GUI Mode)
+### 1. Graphical User Interface (GUI Mode)
 
-Chỉ cần chạy lệnh hoặc mở từ icon Desktop:
+Launch the application from your desktop shortcut or via terminal:
 
 ```bash
 antigravity-ide-updater
 ```
 
-* **Kiểm tra cập nhật:** Bấm nút **`🔍 Kiểm tra`** để xem phiên bản mới nhất từ máy chủ Google.
-* **Tiến hành cập nhật:** Bấm nút **`🚀 Cập nhật ngay`**. Thanh tiến trình sẽ hiển thị phần trăm, dung lượng đã tải và tốc độ tải thực tế.
-* **Mở IDE:** Sau khi hoàn tất, bạn có thể bấm ngay nút **`▶ Khởi động IDE`** để bắt đầu làm việc.
+* **Check for Updates:** Click **`🔍 Check for Updates`** to check Google's release server.
+* **Perform Upgrade:** Click **`🚀 Update Now`**. The real-time progress bar will display the percentage, downloaded megabytes, and current download speed.
+* **Launch IDE:** Once completed, click **`▶ Launch IDE`** to immediately open Antigravity IDE.
 
 ---
 
-### 2. Chế độ Dòng lệnh (CLI Mode)
+### 2. Command Line Interface (CLI Mode)
 
-Thích hợp cho người dùng thích thao tác nhanh trong terminal hoặc tích hợp vào cronjob / script tự động:
+Ideal for quick terminal checks or integration into recurring scripts / cron jobs:
 
-* **Kiểm tra phiên bản mà không mở giao diện:**
+* **Check installed vs latest version:**
   ```bash
   antigravity-ide-updater --check
   ```
-  *Kết quả mẫu:*
+  *Sample output:*
   ```text
   =======================================================
     Antigravity IDE Auto-Updater (CLI Mode)
-    Hệ điều hành: Linux (x64)
+    Platform: Linux (x64)
   =======================================================
-  Phiên bản hiện tại trên máy : v2.5.5
-  Đang kết nối tới máy chủ cập nhật chính thức...
-  Phiên bản mới nhất trên web : v2.5.5
+  Current installed version : v2.5.5
+  Connecting to official release server...
+  Latest release available  : v2.5.5
 
-  => ✓ Bạn đang ở phiên bản mới nhất!
+  => ✓ You are using the latest version!
   ```
 
-* **Cập nhật tự động trực tiếp từ dòng lệnh:**
+* **Perform silent upgrade directly in terminal:**
   ```bash
   antigravity-ide-updater --update
   ```
 
-* **Xem trợ giúp:**
+* **Display help information:**
   ```bash
   antigravity-ide-updater --help
   ```
 
 ---
 
-## 📂 Cấu trúc Thư mục Dự án (Project Structure)
+## 📂 Project Structure
 
 ```text
 antigravity-ide-updater/
 ├── assets/
-│   └── icon.png                  # Icon đại diện của ứng dụng
+│   └── icon.png                  # Application icon asset
 ├── src/
 │   ├── __init__.py
-│   ├── __main__.py               # Điểm khởi chạy chính (CLI & GUI routing)
+│   ├── __main__.py               # Main CLI/GUI dispatcher
 │   ├── core/
 │   │   ├── __init__.py
-│   │   ├── platform_handler.py   # Xử lý khác biệt giữa Linux, Windows, macOS
-│   │   └── updater.py            # Core engine: tải, kiểm tra ver, sao lưu, cài đặt
+│   │   ├── platform_handler.py   # Cross-platform path and OS abstractions
+│   │   └── updater.py            # Core engine: checks, downloads, backups, upgrades
 │   └── gui/
 │       ├── __init__.py
-│       └── app.py                # Giao diện đồ họa Tkinter (Dark theme hiện đại)
-├── install.py                    # Trình cài đặt tự động đa nền tảng
-├── install.sh                    # Trình cài đặt 1-click cho Linux
-├── install.bat                   # Trình cài đặt 1-click cho Windows
-├── install.ps1                   # Trình cài đặt PowerShell cho Windows
-├── main.py                       # Entrypoint ngắn gọn
-├── requirements.txt              # Danh sách thư viện tùy chọn
-├── setup.py                      # Tích hợp pip install
-├── LICENSE                       # Giấy phép MIT
-└── README.md                     # Tài liệu hướng dẫn sử dụng
+│       └── app.py                # Modern Tkinter dark-theme GUI
+├── install.py                    # Universal cross-platform installer
+├── install.sh                    # 1-Click Linux shell installer
+├── install.bat                   # 1-Click Windows batch installer
+├── install.ps1                   # Windows PowerShell installer
+├── main.py                       # Root executable wrapper
+├── requirements.txt              # Optional dependencies
+├── setup.py                      # Pip packaging configuration
+├── LICENSE                       # MIT License
+└── README.md                     # Comprehensive project documentation
 ```
 
 ---
 
-## ⚙️ Yêu cầu Hệ thống (Prerequisites)
+## ⚙️ Requirements
 
-* **Hệ điều hành:** Linux (mọi bản phân phối có hỗ trợ X11/Wayland) hoặc Windows 10/11.
-* **Môi trường:** Python 3.8 trở lên (có sẵn thư viện `tkinter`, mặc định đi kèm bản cài Python chuẩn).
-* Không bắt buộc cài đặt thêm bất kỳ thư viện bên thứ ba nào (`requests`, `beautifulsoup4`...) vì toàn bộ tính năng sử dụng thư viện chuẩn của Python (`urllib`, `tarfile`, `gzip`, `threading`).
+* **Operating System:** Linux (X11 / Wayland desktop) or Windows 10/11.
+* **Runtime:** Python 3.8+ (standard installation with `tkinter` included).
+* No mandatory third-party dependencies are required. The entire codebase is implemented using the Python Standard Library (`urllib`, `tarfile`, `gzip`, `threading`, `subprocess`).
 
 ---
 
-## 📄 Bản quyền (License)
+## 📄 License
 
-Dự án được phân phối dưới giấy phép **MIT License**. Xem chi tiết tại tệp [LICENSE](LICENSE).
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.

@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=== Cài đặt Antigravity IDE Updater (Linux) ==="
+echo "=== Installing Antigravity IDE Updater (Linux) ==="
 
-# Kiểm tra Python 3
 if ! command -v python3 >/dev/null 2>&1; then
-    echo "❌ Lỗi: Python 3 chưa được cài đặt. Vui lòng cài đặt python3 trước."
+    echo "❌ Error: Python 3 is required. Please install python3 first."
     exit 1
 fi
 

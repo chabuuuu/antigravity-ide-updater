@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Modern Tkinter GUI for Antigravity IDE Updater
-Hoạt động nhất quán trên cả Windows và Linux.
+Operates consistently on both Windows and Linux.
 """
 
 import os
@@ -24,10 +24,10 @@ def create_gui(platform_handler=None):
     root.geometry("640x550")
     root.minsize(580, 500)
 
-    # Chọn phông chữ tùy theo hệ điều hành
+    # Choose font based on platform
     font_family = "Segoe UI" if handler.is_windows() else "Noto Sans"
 
-    # Màu sắc hiện đại (Dark Theme)
+    # Dark Theme Colors
     BG_COLOR = "#181920"
     PANEL_BG = "#21222c"
     CARD_BG = "#282a36"
@@ -41,7 +41,7 @@ def create_gui(platform_handler=None):
 
     root.configure(bg=BG_COLOR)
 
-    # Thử gắn icon
+    # Attach window icon if available
     icon_path = Path(__file__).resolve().parent.parent.parent / "assets" / "icon.png"
     if not icon_path.exists():
         icon_path = handler.install_dir / "resources/app/resources/linux/code.png"
@@ -70,10 +70,10 @@ def create_gui(platform_handler=None):
         bg=BG_COLOR
     ).pack(anchor="w")
 
-    platform_desc = f"Hệ điều hành: {handler.system.capitalize()} ({'ARM64' if handler.is_arm() else 'x64'})"
+    platform_desc = f"Platform: {handler.system.capitalize()} ({'ARM64' if handler.is_arm() else 'x64'})"
     tk.Label(
         header,
-        text=f"Kiểm tra & tự động cập nhật an toàn dữ liệu 100% | {platform_desc}",
+        text=f"Automated update utility with 100% data safety | {platform_desc}",
         font=(font_family, 9),
         fg=MUTED_TEXT,
         bg=BG_COLOR
@@ -83,16 +83,16 @@ def create_gui(platform_handler=None):
     card = tk.Frame(root, bg=CARD_BG, highlightbackground="#383a4c", highlightthickness=1)
     card.pack(fill="x", padx=20, pady=8)
 
-    tk.Label(card, text="Phiên bản trên máy:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=0, column=0, sticky="w", padx=15, pady=(12, 3))
-    lbl_installed = tk.Label(card, text="Đang đọc...", font=(font_family, 11, "bold"), fg=TEXT_COLOR, bg=CARD_BG)
+    tk.Label(card, text="Installed Version:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=0, column=0, sticky="w", padx=15, pady=(12, 3))
+    lbl_installed = tk.Label(card, text="Reading...", font=(font_family, 11, "bold"), fg=TEXT_COLOR, bg=CARD_BG)
     lbl_installed.grid(row=0, column=1, sticky="w", padx=10, pady=(12, 3))
 
-    tk.Label(card, text="Phiên bản mới nhất:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=1, column=0, sticky="w", padx=15, pady=3)
-    lbl_latest = tk.Label(card, text="Chưa kiểm tra", font=(font_family, 11, "bold"), fg=ACCENT_BLUE, bg=CARD_BG)
+    tk.Label(card, text="Latest Version:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=1, column=0, sticky="w", padx=15, pady=3)
+    lbl_latest = tk.Label(card, text="Not checked", font=(font_family, 11, "bold"), fg=ACCENT_BLUE, bg=CARD_BG)
     lbl_latest.grid(row=1, column=1, sticky="w", padx=10, pady=3)
 
-    tk.Label(card, text="Trạng thái:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=2, column=0, sticky="w", padx=15, pady=(3, 12))
-    lbl_status = tk.Label(card, text="Đang khởi tạo...", font=(font_family, 10, "bold"), fg=ACCENT_ORANGE, bg=CARD_BG)
+    tk.Label(card, text="Status:", font=(font_family, 10), fg=MUTED_TEXT, bg=CARD_BG).grid(row=2, column=0, sticky="w", padx=15, pady=(3, 12))
+    lbl_status = tk.Label(card, text="Initializing...", font=(font_family, 10, "bold"), fg=ACCENT_ORANGE, bg=CARD_BG)
     lbl_status.grid(row=2, column=1, sticky="w", padx=10, pady=(3, 12))
 
     # Safety Banner
@@ -100,7 +100,7 @@ def create_gui(platform_handler=None):
     shield.pack(fill="x", padx=20, pady=(0, 8))
     tk.Label(
         shield,
-        text="🔒 Cam kết an toàn dữ liệu: Cấu hình cá nhân, phím tắt, tiện ích mở rộng và dự án được bảo toàn nguyên vẹn 100%.",
+        text="🔒 100% Data Safety Guarantee: Your personal settings, keybindings, extensions, and workspaces are completely preserved.",
         font=(font_family, 8),
         fg=ACCENT_GREEN,
         bg="#1d2d25",
@@ -144,7 +144,7 @@ def create_gui(platform_handler=None):
 
     btn_check = tk.Button(
         btn_frame,
-        text="🔍 Kiểm tra",
+        text="🔍 Check for Updates",
         font=(font_family, 10, "bold"),
         bg=BTN_BG,
         fg=TEXT_COLOR,
@@ -156,7 +156,7 @@ def create_gui(platform_handler=None):
 
     btn_update = tk.Button(
         btn_frame,
-        text="🚀 Cập nhật ngay",
+        text="🚀 Update Now",
         font=(font_family, 10, "bold"),
         bg=ACCENT_GREEN,
         fg="#181920",
@@ -169,7 +169,7 @@ def create_gui(platform_handler=None):
 
     btn_launch = tk.Button(
         btn_frame,
-        text="▶ Khởi động IDE",
+        text="▶ Launch IDE",
         font=(font_family, 10),
         bg=BTN_BG,
         fg=TEXT_COLOR,
@@ -186,12 +186,12 @@ def create_gui(platform_handler=None):
         if curr:
             lbl_installed.config(text=f"v{curr}", fg=TEXT_COLOR)
         else:
-            lbl_installed.config(text="Chưa phát hiện", fg=ACCENT_ORANGE)
+            lbl_installed.config(text="Not detected", fg=ACCENT_ORANGE)
 
     def check_updates(quiet=False):
         btn_check.config(state="disabled")
-        lbl_status.config(text="Đang kết nối đến Google...", fg=ACCENT_ORANGE)
-        append_log("Đang kiểm tra thông tin phiên bản mới từ https://antigravity.google...")
+        lbl_status.config(text="Connecting to Google release servers...", fg=ACCENT_ORANGE)
+        append_log("Querying official release page at https://antigravity.google...")
 
         def _worker():
             try:
@@ -209,57 +209,57 @@ def create_gui(platform_handler=None):
                     has_update = False
                     if not local_v:
                         has_update = True
-                        lbl_status.config(text="Chưa cài đặt. Bấm Cập nhật để cài mới.", fg=ACCENT_ORANGE)
+                        lbl_status.config(text="Not installed. Click Update to install.", fg=ACCENT_ORANGE)
                     else:
                         local_t = parse_version(local_v)
                         remote_t = parse_version(remote_v)
                         if remote_t > local_t:
                             has_update = True
-                            lbl_status.config(text=f"⚡ Đã có bản mới (v{remote_v})!", fg=ACCENT_BLUE)
-                            append_log(f"-> Đã có bản cập nhật: v{remote_v} (Hiện tại: v{local_v})")
+                            lbl_status.config(text=f"⚡ New update available (v{remote_v})!", fg=ACCENT_BLUE)
+                            append_log(f"-> Update detected: v{remote_v} (Installed: v{local_v})")
                         else:
-                            lbl_status.config(text="✓ Bạn đang sử dụng phiên bản mới nhất!", fg=ACCENT_GREEN)
-                            append_log(f"-> Đang ở phiên bản mới nhất: v{local_v}")
+                            lbl_status.config(text="✓ You are using the latest version!", fg=ACCENT_GREEN)
+                            append_log(f"-> Antigravity IDE is up to date: v{local_v}")
 
                     if has_update:
-                        btn_update.config(state="normal", text="🚀 Cập nhật ngay", bg=ACCENT_GREEN)
+                        btn_update.config(state="normal", text="🚀 Update Now", bg=ACCENT_GREEN)
                     else:
-                        btn_update.config(state="normal", text="🔄 Cài đặt đè lại", bg=BTN_BG)
+                        btn_update.config(state="normal", text="🔄 Reinstall", bg=BTN_BG)
 
                 root.after(0, _success)
             except Exception as e:
                 def _error():
                     btn_check.config(state="normal")
-                    lbl_status.config(text="Lỗi kết nối", fg=ACCENT_RED)
-                    append_log(f"❌ Không thể kiểm tra: {e}")
+                    lbl_status.config(text="Connection Error", fg=ACCENT_RED)
+                    append_log(f"❌ Failed to check updates: {e}")
                     if not quiet:
-                        messagebox.showerror("Lỗi", f"Không thể lấy thông tin cập nhật:\n{e}")
+                        messagebox.showerror("Error", f"Failed to retrieve update information:\n{e}")
                 root.after(0, _error)
 
         threading.Thread(target=_worker, daemon=True).start()
 
     def do_update():
         if not release_info.get("url"):
-            messagebox.showwarning("Thông báo", "Vui lòng kiểm tra cập nhật trước.")
+            messagebox.showwarning("Notice", "Please check for updates first.")
             return
 
         if handler.is_ide_running():
             ans = messagebox.askyesno(
-                "Antigravity IDE đang chạy",
-                "Antigravity IDE đang được mở. Bạn có muốn tự động đóng ứng dụng để tiến hành cập nhật không?"
+                "Antigravity IDE is Running",
+                "Antigravity IDE is currently active. Would you like to close it automatically to proceed with the update?"
             )
             if ans:
-                append_log("Đang đóng tiến trình IDE...")
+                append_log("Closing Antigravity IDE processes...")
                 handler.close_ide()
             else:
-                append_log("⚠ Hủy cập nhật vì ứng dụng chưa được đóng.")
+                append_log("⚠ Update cancelled: application is still open.")
                 return
 
         btn_update.config(state="disabled")
         btn_check.config(state="disabled")
         btn_launch.config(state="disabled")
         progress_bar["value"] = 0
-        lbl_status.config(text="Đang cập nhật...", fg=ACCENT_BLUE)
+        lbl_status.config(text="Updating...", fg=ACCENT_BLUE)
 
         def _worker():
             try:
@@ -281,14 +281,14 @@ def create_gui(platform_handler=None):
                 def _finish():
                     refresh_installed_ver()
                     progress_bar["value"] = 100
-                    lbl_progress_info.config(text="Hoàn thành 100%!")
-                    lbl_status.config(text="✓ Cập nhật thành công!", fg=ACCENT_GREEN)
+                    lbl_progress_info.config(text="Completed 100%!")
+                    lbl_status.config(text="✓ Update Successful!", fg=ACCENT_GREEN)
                     btn_check.config(state="normal")
-                    btn_update.config(state="normal", text="🔄 Cài đặt đè lại", bg=BTN_BG)
+                    btn_update.config(state="normal", text="🔄 Reinstall", bg=BTN_BG)
                     btn_launch.config(state="normal")
                     messagebox.showinfo(
-                        "Thành công",
-                        f"Đã cập nhật Antigravity IDE lên phiên bản v{new_v} thành công!\nToàn bộ dữ liệu của bạn đã được bảo vệ nguyên vẹn."
+                        "Success",
+                        f"Antigravity IDE has been updated to v{new_v} successfully!\nAll your user settings and extensions are intact."
                     )
 
                 root.after(0, _finish)
@@ -297,9 +297,9 @@ def create_gui(platform_handler=None):
                     btn_check.config(state="normal")
                     btn_update.config(state="normal")
                     btn_launch.config(state="normal")
-                    lbl_status.config(text="Cập nhật thất bại", fg=ACCENT_RED)
-                    append_log(f"❌ Thất bại: {e}")
-                    messagebox.showerror("Lỗi", f"Quá trình cập nhật thất bại:\n{e}")
+                    lbl_status.config(text="Update Failed", fg=ACCENT_RED)
+                    append_log(f"❌ Update failed: {e}")
+                    messagebox.showerror("Update Error", f"An error occurred during the update:\n{e}")
                 root.after(0, _fail)
 
         threading.Thread(target=_worker, daemon=True).start()
@@ -308,7 +308,7 @@ def create_gui(platform_handler=None):
         if handler.launch_ide():
             root.destroy()
         else:
-            messagebox.showerror("Lỗi", "Không tìm thấy file khởi động Antigravity IDE.")
+            messagebox.showerror("Error", "Could not locate Antigravity IDE launcher executable.")
 
     btn_check.config(command=lambda: check_updates(quiet=False))
     btn_update.config(command=do_update)

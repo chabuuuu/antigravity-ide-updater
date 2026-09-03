@@ -1,12 +1,12 @@
 @echo off
-echo ==============================================
-echo   Cai dat Antigravity IDE Updater (Windows)
-echo ==============================================
+echo ===================================================
+echo   Installing Antigravity IDE Updater (Windows)
+echo ===================================================
 
 where python >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
-    echo [LOI] Khong tim thay Python tren he thong.
-    echo Vui long cai dat Python 3 va thu lai.
+    echo [ERROR] Python not found on system.
+    echo Please install Python 3 and try again.
     pause
     exit /b 1
 )

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Platform Handler for Antigravity IDE Updater
-Quản lý các đường dẫn, nhận diện hệ điều hành (Linux, Windows, macOS)
-và các thao tác đặc thù cho từng nền tảng.
+Handles paths, OS detection (Linux, Windows, macOS), and platform-specific actions.
 """
 
 import os
@@ -25,7 +24,7 @@ class PlatformHandler:
             app_data = Path(os.environ.get("APPDATA", str(self.home / "AppData/Roaming")))
             program_files = Path(os.environ.get("ProgramFiles", "C:/Program Files"))
 
-            # Kiểm tra vị trí cài đặt trên Windows
+            # Check installation candidate locations on Windows
             candidate_1 = local_app_data / "Programs" / "Antigravity IDE"
             candidate_2 = program_files / "Antigravity IDE"
 
@@ -75,7 +74,7 @@ class PlatformHandler:
         return "arm" in self.machine or "aarch64" in self.machine
 
     def get_url_pattern(self):
-        """Trả về regex pattern khớp với URL download tương ứng hệ điều hành"""
+        """Returns the regex pattern matching the official download URL for current platform."""
         if self.is_windows():
             arch = "arm64" if self.is_arm() else "x64"
             return rf'(https://[^\s"\'<>]*windows-{arch}/Antigravity(?:%20|\+)IDE\.exe)'
@@ -87,7 +86,7 @@ class PlatformHandler:
             return rf'(https://[^\s"\'<>]*linux-{arch}/Antigravity(?:%20|\+)IDE\.tar\.gz)'
 
     def is_ide_running(self):
-        """Kiểm tra tiến trình Antigravity IDE đang hoạt động"""
+        """Checks if Antigravity IDE process is currently running."""
         try:
             if self.is_windows():
                 out = subprocess.check_output(
@@ -108,7 +107,7 @@ class PlatformHandler:
             return False
 
     def close_ide(self):
-        """Đóng an toàn tiến trình IDE"""
+        """Gracefully closes Antigravity IDE processes."""
         try:
             if self.is_windows():
                 subprocess.run(["taskkill", "/F", "/IM", "antigravity-ide.exe"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -119,7 +118,7 @@ class PlatformHandler:
             return False
 
     def launch_ide(self):
-        """Khởi động Antigravity IDE"""
+        """Launches Antigravity IDE."""
         if self.launcher_bin.exists():
             if self.is_windows():
                 os.startfile(str(self.launcher_bin))

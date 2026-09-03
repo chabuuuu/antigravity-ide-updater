@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Core Updater Engine
-Thực hiện kiểm tra phiên bản từ máy chủ Google, tải bản cập nhật,
-sao lưu cấu hình và cài đặt trên Linux/Windows.
+Checks official Google release server, downloads packages, backs up configurations,
+and installs updates seamlessly on Linux & Windows.
 """
 
 import os
@@ -24,7 +24,7 @@ DOWNLOAD_PAGE_URL = "https://antigravity.google/download"
 
 
 def parse_version(v_str):
-    """Trích xuất tuple số để so sánh phiên bản"""
+    """Extracts integer tuple to compare version strings cleanly."""
     if not v_str:
         return (0, 0, 0)
     clean_v = str(v_str).split("-")[0]
@@ -37,7 +37,7 @@ class AntigravityUpdater:
         self.handler = platform_handler or PlatformHandler()
 
     def get_installed_version(self):
-        """Đọc phiên bản hiện tại từ product.json"""
+        """Reads currently installed version from product.json."""
         if not self.handler.product_json.exists():
             return None
         try:
@@ -48,7 +48,7 @@ class AntigravityUpdater:
             return None
 
     def fetch_latest_release_info(self):
-        """Truy vấn trang download chính thức để lấy URL và phiên bản mới nhất"""
+        """Queries the official download page to retrieve latest URL and version."""
         req = urllib.request.Request(
             DOWNLOAD_PAGE_URL,
             headers={"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"}
@@ -62,7 +62,7 @@ class AntigravityUpdater:
         pattern = self.handler.get_url_pattern()
         match = re.search(pattern, html)
         if not match:
-            raise RuntimeError(f"Không tìm thấy link tải Antigravity IDE phù hợp cho hệ điều hành ({self.handler.system}).")
+            raise RuntimeError(f"Could not find a valid Antigravity IDE download link for {self.handler.system}.")
 
         url = match.group(1)
         ver_match = re.search(r'/([^/]+)/(linux|windows|darwin)-', url)
@@ -76,7 +76,7 @@ class AntigravityUpdater:
         }
 
     def backup_user_config(self, log_callback=None):
-        """Sao lưu an toàn thư mục User Settings"""
+        """Backs up user configuration to ensure zero data loss."""
         def log(msg):
             if log_callback:
                 log_callback(msg)
@@ -85,7 +85,7 @@ class AntigravityUpdater:
 
         user_dir = self.handler.user_config_dir / "User"
         if not user_dir.exists():
-            log("  ℹ Không tìm thấy cấu hình cá nhân trước đó để sao lưu.")
+            log("  ℹ No existing user configuration found to back up.")
             return None
 
         self.handler.backup_dir.mkdir(parents=True, exist_ok=True)
@@ -95,9 +95,9 @@ class AntigravityUpdater:
         try:
             with tarfile.open(backup_file, "w:gz") as tar:
                 tar.add(user_dir, arcname="User")
-            log(f"  ✓ Đã sao lưu an toàn cấu hình tại: {backup_file.name}")
+            log(f"  ✓ User configuration safely backed up to: {backup_file.name}")
 
-            # Dọn dẹp chỉ giữ tối đa 3 bản sao lưu gần nhất
+            # Keep only the 3 most recent backups
             backups = sorted(self.handler.backup_dir.glob("config_backup_*.tar.gz"), key=os.path.getmtime)
             while len(backups) > 3:
                 oldest = backups.pop(0)
@@ -107,11 +107,11 @@ class AntigravityUpdater:
                     pass
             return backup_file
         except Exception as e:
-            log(f"  ⚠ Không thể sao lưu cấu hình: {e}")
+            log(f"  ⚠ Unable to backup user configuration: {e}")
             return None
 
     def send_notification(self, title, message):
-        """Gửi thông báo desktop đa nền tảng"""
+        """Sends a desktop notification across platforms."""
         if self.handler.is_linux() and shutil.which("notify-send"):
             icon = self.handler.install_dir / "resources/app/resources/linux/code.png"
             cmd = ["notify-send", title, message]
@@ -135,7 +135,7 @@ class AntigravityUpdater:
                 pass
 
     def perform_update(self, download_url, progress_callback=None, log_callback=None):
-        """Quy trình cập nhật tự động toàn diện"""
+        """Executes the full automated update workflow."""
         def log(msg):
             if log_callback:
                 log_callback(msg)
@@ -146,12 +146,12 @@ class AntigravityUpdater:
         pkg_name = "Antigravity_IDE_setup.exe" if self.handler.is_windows() else "Antigravity_IDE_latest.tar.gz"
         pkg_path = self.handler.cache_dir / pkg_name
 
-        # Bước 1: Sao lưu cấu hình
-        log("[1/5] Sao lưu an toàn dữ liệu người dùng (Bảo toàn 100%)...")
+        # Step 1: Backup user data
+        log("[1/5] Backing up user settings (100% data safe)...")
         self.backup_user_config(log_callback=log)
 
-        # Bước 2: Tải file cập nhật
-        log(f"[2/5] Đang tải gói cập nhật từ Google ({download_url.split('/')[-1]})...")
+        # Step 2: Download release package
+        log(f"[2/5] Downloading package from Google ({download_url.split('/')[-1]})...")
         req = urllib.request.Request(download_url, headers={"User-Agent": "Mozilla/5.0"})
 
         start_time = time.time()
@@ -176,21 +176,20 @@ class AntigravityUpdater:
                         tot_mb = total_size / (1024 * 1024)
                         progress_callback(percent, f"{dl_mb:.1f}/{tot_mb:.1f} MB ({speed:.1f} MB/s)")
 
-        log("  ✓ Tải về hoàn tất thành công!")
+        log("  ✓ Download completed successfully!")
 
-        # Bước 3 & 4: Cài đặt theo hệ điều hành
+        # Step 3 & 4: Platform-specific installation
         if self.handler.is_windows():
-            log("[3/5] Đang khởi chạy trình cài đặt Windows...")
-            # Chạy file installer chế độ im lặng hoặc tương tác
+            log("[3/5] Starting Windows installer...")
             cmd = [str(pkg_path), "/VERYSILENT", "/NORESTART", "/MERGETASKS=!runcode"]
-            log("  -> Đang thực thi cài đặt ngầm (/VERYSILENT)...")
+            log("  -> Running silent background installation (/VERYSILENT)...")
             ret = subprocess.run(cmd, check=False)
             if ret.returncode != 0:
-                log("  ⚠ Chế độ ngầm không hoàn tất, đang chuyển sang chế độ đồ họa...")
+                log("  ⚠ Silent mode exited with error, opening standard installer window...")
                 subprocess.run([str(pkg_path)], check=True)
-            log("[4/5] Đồng bộ cài đặt và shortcut Windows...")
+            log("[4/5] Synchronizing installation and shortcuts...")
         else:
-            log("[3/5] Đang giải nén bộ cài đặt Linux...")
+            log("[3/5] Extracting release package...")
             extract_dir = self.handler.cache_dir / "extract"
             if extract_dir.exists():
                 shutil.rmtree(extract_dir)
@@ -201,9 +200,9 @@ class AntigravityUpdater:
 
             new_app_dir = extract_dir / "Antigravity IDE"
             if not new_app_dir.exists() or not (new_app_dir / "bin/antigravity-ide").exists():
-                raise RuntimeError("Gói tải về không hợp lệ.")
+                raise RuntimeError("Downloaded package does not contain a valid Antigravity IDE directory.")
 
-            log("[4/5] Cập nhật thư mục ứng dụng an toàn...")
+            log("[4/5] Safely replacing application directory...")
             backup_app = self.handler.home / "Antigravity IDE.bak"
             if backup_app.exists():
                 shutil.rmtree(backup_app)
@@ -214,18 +213,18 @@ class AntigravityUpdater:
             try:
                 shutil.move(str(new_app_dir), str(self.handler.install_dir))
             except Exception as e:
-                log(f"  ❌ Lỗi di chuyển thư mục: {e}. Đang phục hồi bản trước...")
+                log(f"  ❌ Error replacing directory: {e}. Restoring previous version...")
                 if backup_app.exists():
                     backup_app.rename(self.handler.install_dir)
                 raise
 
-            # Cấp quyền thực thi
+            # Make binaries executable
             for exe_name in ["antigravity-ide", "bin/antigravity-ide", "chrome-sandbox"]:
                 p = self.handler.install_dir / exe_name
                 if p.exists():
                     os.chmod(p, 0o755)
 
-            # Đảm bảo symlink ở ~/.local/bin
+            # Ensure symlink in ~/.local/bin
             if hasattr(self.handler, "local_bin_link"):
                 self.handler.local_bin_link.parent.mkdir(parents=True, exist_ok=True)
                 if self.handler.local_bin_link.is_symlink() or self.handler.local_bin_link.exists():
@@ -237,8 +236,8 @@ class AntigravityUpdater:
             if extract_dir.exists():
                 shutil.rmtree(extract_dir)
 
-        # Bước 5: Hoàn tất
-        log("[5/5] Hoàn tất 100%! Cấu hình và tiện ích mở rộng được giữ nguyên vẹn.")
-        new_v = self.get_installed_version() or "mới nhất"
-        self.send_notification("Antigravity IDE", f"Đã cập nhật thành công lên phiên bản v{new_v}!")
+        # Step 5: Finalize
+        log("[5/5] Update completed! User settings and extensions are 100% preserved.")
+        new_v = self.get_installed_version() or "latest"
+        self.send_notification("Antigravity IDE", f"Successfully updated to v{new_v}!")
         return new_v
