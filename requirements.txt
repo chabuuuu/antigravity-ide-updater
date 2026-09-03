@@ -1,0 +1,3 @@
+# Ứng dụng hoạt động hoàn toàn bằng Python Standard Library.
+# Gói packaging bên dưới là tùy chọn nhằm hỗ trợ so sánh phiên bản mở rộng:
+packaging>=21.0
